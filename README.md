@@ -29,8 +29,8 @@ Inspirado de [Express & mongoose REST API Boilerplate in ES6 with Code Coverage]
 
 Clone the repo:
 ```sh
-git clone git@github.com:KunalKapadia/express-mongoose-es6-rest-api.git
-cd express-mongoose-es6-rest-api
+git clone https://github.com/Linusar/node_restapi.git
+cd node_restapi
 ```
 
 Install dependencies:
