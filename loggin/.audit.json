@@ -1,0 +1,49 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 15
+    },
+    "auditLog": "loggin/.audit.json",
+    "files": [
+        {
+            "date": 1542715837193,
+            "name": "loggin\\loggin.20-11-2018",
+            "hash": "17af4168054a5e487e012923f8fd6074"
+        },
+        {
+            "date": 1542893802448,
+            "name": "loggin\\loggin.22-11-2018",
+            "hash": "aac28e0d1a9a82b060e631282cfaaf9a"
+        },
+        {
+            "date": 1543235478990,
+            "name": "loggin\\loggin.26-11-2018",
+            "hash": "87ab36a29058f8aa0580767da7a12cf5"
+        },
+        {
+            "date": 1543321513058,
+            "name": "loggin\\loggin.27-11-2018",
+            "hash": "b141be26ec6a510fcc1aa4b5b2c4cd32"
+        },
+        {
+            "date": 1543493917062,
+            "name": "loggin\\loggin.29-11-2018",
+            "hash": "b3f7e1150e5d6816142c2745a018435c"
+        },
+        {
+            "date": 1543838810758,
+            "name": "loggin\\loggin.03-12-2018",
+            "hash": "9057f7bf89a7f07d32299c3db77cc229"
+        },
+        {
+            "date": 1543924745446,
+            "name": "loggin\\loggin.04-12-2018",
+            "hash": "52fa5066ea60f70a3e51bfad43ff54d7"
+        },
+        {
+            "date": 1544010444580,
+            "name": "loggin\\loggin.05-12-2018",
+            "hash": "6831cf93166ed99baba59085091c1fb0"
+        }
+    ]
+}

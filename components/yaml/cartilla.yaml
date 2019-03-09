@@ -1,0 +1,4342 @@
+swagger: "2.0"
+info:
+  description: | 
+      Cartilla prestadores es una API RESTful basadas en HTTP que usa una key o token para la autorización. Los cuerpos de solicitud y respuesta de API están formateados en JSON.
+    
+        <p><code> Importante:No puede ejecutar las solicitudes de muestra en esta web tal como está. Reemplace los parámetros específicos de la llamada con la api key provista.</code></p> 
+        
+        A continuación se describen todas las rutas definidas respuestas y datos aceptados en cada caso también cuenta con la opción de probar todas las rutas.
+  version: "1.0.0"
+  title: "Cartilla Prestadores"
+  termsOfService: "http://#"
+  contact:
+    email: "cartillamedica@ioma.gba.gov.ar"
+externalDocs:
+  description: "Preguntas Frecuentes"
+  url: "faq.html"
+host: "localhost:8081/api-cartilla"
+basePath: "/v1"
+tags:
+- name: "barrios"
+  description: "Operaciones sobre barrios"
+schemes:
+- "http"
+- "https"
+securityDefinitions:
+  api_key:
+    type: apiKey
+    in: header
+    name: api_key
+security:
+  - api_key: []    
+paths:
+  /users/login:
+    post:
+      tags:
+      - "users"
+      summary: "Get api key"
+      description: "Retorna una api key que expira en 1 hora"
+      operationId: "getToken"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Nombre de usuario y password."
+        required: true
+        schema:
+          $ref: "#/definitions/Users"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Users"
+        401:
+          description: "Incorrect credentials"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /users/refresh:
+    post:
+      tags:
+      - "users"
+      summary: "Refresh api key"
+      description: "Se genera una nueva api key."
+      operationId: "getRefresh"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Api key."
+        required: true
+        schema:
+          $ref: "#/definitions/Api_Key"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Api_Key"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /barrios:
+    get:
+      tags:
+      - "barrios"
+      summary: "Get all barrios"
+      description: "Retorna un maximo de 50 barrios ordenados por id."
+      operationId: "getAllBarrios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Barrios"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /barrios/{id}:
+    get:
+      tags:
+      - "barrios"
+      summary: "Find barrios by id"
+      description: "Busqueda de barrios por id"
+      operationId: "findBarriosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del barrio a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Barrios"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /localidades:
+    get:
+      tags:
+      - "localidades"
+      summary: "Get all localidades"
+      description: "Retorna un maximo de 50 localidades ordenados por id."
+      operationId: "getAllLocalidades"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Localidades"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"           
+  /localidades/{id}:
+    get:
+      tags:
+      - "localidades"
+      summary: "Find localidades by id"
+      description: "Busqueda de localidades por id"
+      operationId: "findLocalidadesById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del localidades a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Localidades"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /localidades/barrios:
+    get:
+      tags:
+      - "localidades"
+      summary: "Get all localidades and barrios"
+      description: "Retorna un maximo de 50 localidades y sus barrios ordenados por id."
+      operationId: "getAllLocalidadesBarrios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de localidades. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "barrios"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de barrios. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                        type: "object"
+                        id:
+                          type: "integer"
+                          format: "int64"
+                        id_partidos:
+                          type: "integer"
+                          format: "int64"
+                        descripcion:
+                          type: "string"
+                          format: "60"
+                        codigo_postal:
+                          type: "integer"
+                          format: "int64"
+                        barrios:
+                          type: "array"
+                          items:       
+                            type: "object"
+                            $ref: "#/definitions/Barrios"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /partidos:
+    get:
+      tags:
+      - "partidos"
+      summary: "Get all partidos"
+      description: "Retorna un maximo de 50 partidos ordenados por id."
+      operationId: "getAllPartidos"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Partidos"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"            
+  /partidos/{id}:
+    get:
+      tags:
+      - "partidos"
+      summary: "Find lopartidos calidades by id"
+      description: "Busqueda de partidos por id"
+      operationId: "findPartidosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del partidos a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Partidos"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"  
+  /partidos/localidades:
+    get:
+      tags:
+      - "partidos"
+      summary: "Get all partidos and localidades"
+      description: "Retorna un maximo de 50 partidos y sus localidades ordenados por id."
+      operationId: "getAllPartidosLocalidades"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de partidos. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "localidades"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de localidades. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "barrios"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de barrios. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                        type: "object"
+                        id:
+                          type: "integer"
+                          format: "int64"
+                        descripcion:
+                          type: "string"
+                          format: "60"
+                        localidades:
+                          type: "array"
+                          items:
+                            type: "object"
+                            $ref: "#/definitions/Localidades"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /partidos/localidades/barrios:
+    get:
+      tags:
+      - "partidos"
+      summary: "Get all partidos and localidades and barrios"
+      description: "Retorna un maximo de 50 partidos y sus localidades y sus barrios ordenados por id."
+      operationId: "getAllPartidosLocalidadesBarrios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de partidos. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "localidades"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de localidades. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "barrios"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de barrios. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                        type: "object"
+                        id:
+                          type: "integer"
+                          format: "int64"
+                        descripcion:
+                          type: "string"
+                          format: "60"
+                        localidades:
+                          type: "array"
+                          items:
+                            type: "object"
+                            properties:
+                                type: "object"
+                                id:
+                                  type: "integer"
+                                  format: "int64"
+                                id_partidos:
+                                  type: "integer"
+                                  format: "int64"
+                                descripcion:
+                                  type: "string"
+                                  format: "60"
+                                codigo_postal:
+                                  type: "integer"
+                                  format: "int64"
+                                barrios:
+                                  type: "array"
+                                  items:       
+                                    type: "object"
+                                    $ref: "#/definitions/Barrios"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /categorias:
+    get:
+      tags:
+      - "categorias"
+      summary: "Get all categorias"
+      description: "Retorna un maximo de 50 categorias ordenados por id."
+      operationId: "getAllCategorias"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Categorias"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /categorias/{id}:
+    get:
+      tags:
+      - "categorias"
+      summary: "Find categorias by id"
+      description: "Busqueda de categorias por id"
+      operationId: "findCategoriasById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la categoria a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Categorias"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /estados:
+    get:
+      tags:
+      - "estados"
+      summary: "Get all estados"
+      description: "Retorna un maximo de 50 estados ordenados por id."
+      operationId: "getAllEstados"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Estados"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /estados/{id}:
+    get:
+      tags:
+      - "estados"
+      summary: "Find estados by id"
+      description: "Busqueda de estados por id"
+      operationId: "findEstadosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del estado a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Estados"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /entidades:
+    get:
+      tags:
+      - "entidades"
+      summary: "Get all entidades"
+      description: "Retorna un maximo de 50 entidades ordenados por id."
+      operationId: "getAllEntidades"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Entidades"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /entidades/{id}:
+    get:
+      tags:
+      - "entidades"
+      summary: "Find entidades by id"
+      description: "Busqueda de entidades por id"
+      operationId: "findEntidadesById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la entidades a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Estados"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /especialidadesclinicas:
+    get:
+      tags:
+      - "especialidades clinicas"
+      summary: "Get all especialidades clinicas"
+      description: "Retorna un maximo de 50 especialidades clinicas ordenados por id."
+      operationId: "getAllEspecialidadesClinicas"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Especialidades_Clinicas"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /especialidadesclinicas/{id}:
+    get:
+      tags:
+      - "especialidades clinicas"
+      summary: "Find especialidades clinicas by id"
+      description: "Busqueda de especialidades clinicas por id"
+      operationId: "findEspecialidadesClinicasById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de las especialidades clinicas a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Especialidades_Clinicas"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /especialidadesaltacomplejidad:
+    get:
+      tags:
+      - "especialidades alta complejidad"
+      summary: "Get all especialidades alta complejidad"
+      description: "Retorna un maximo de 50 especialidades alta complejidad ordenados por id."
+      operationId: "getAllEspecialidadesAltaComplejidad"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Especialidades_Clinicas_Alta_Complejidad"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /especialidadesaltacomplejidad/{id}:
+    get:
+      tags:
+      - "especialidades alta complejidad"
+      summary: "Find especialidades alta complejidad by id"
+      description: "Busqueda de especialidades alta complejidad por id"
+      operationId: "findEspecialidadesAltaComplejidadsById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de las especialidades alta complejidad a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Especialidades_Clinicas_Alta_Complejidad"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /especialidades:
+    get:
+      tags:
+      - "especialidades profesionales"
+      summary: "Get all especialidades profesionales"
+      description: "Retorna un maximo de 50 especialidades ordenados por id."
+      operationId: "getAllEspecialidades"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Especialidades_Profesionales"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /especialidades/{id}:
+    get:
+      tags:
+      - "especialidades profesionales"
+      summary: "Find especialidades by id"
+      description: "Busqueda de especialidades profesionales por id"
+      operationId: "findEspecialidadesById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de las especialidades profesionales a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Especialidades_Profesionales"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"  
+  /profesiones:
+    get:
+      tags:
+      - "profesiones"
+      summary: "Get all profesiones"
+      description: "Retorna un maximo de 50 profesiones ordenados por id."
+      operationId: "getAllProfesiones"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+          properties:
+                  count:
+                    type: "integer"
+                  row:
+                    type: "array"
+                    items:
+                      $ref: "#/definitions/Profesiones"
+                  limit:
+                    type: "integer"
+                  offset:
+                    type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"           
+  /profesiones/{id}:
+    get:
+      tags:
+      - "profesiones"
+      summary: "Find profesiones by id"
+      description: "Busqueda de profesiones por id"
+      operationId: "findProfesionesById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la profesiones a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Profesiones"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /profesiones/especialidades:
+    get:
+      tags:
+      - "profesiones"
+      summary: "Get all profesiones and especialidades"
+      description: "Retorna un maximo de 50 porfesiones y sus especialidades ordenados por id."
+      operationId: "getAllProfesionesEspecialidades"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de localidades. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "barrios"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro de barrios. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+          properties:
+            count:
+              type: "integer"
+            row:
+              type: "array"
+              items:
+                type: "object"
+                properties:
+                  id:
+                    type: "integer"
+                    format: "int64"
+                  descripcion:
+                    type: "string"
+                    format: "150"
+                  especialidades:
+                    type: "object"
+                    $ref: "#/definitions/Especialidades_Profesionales"
+            limit:
+              type: "integer"
+            offset:
+              type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /telefonos:
+    get:
+      tags:
+      - "telefonos"
+      summary: "Get all telefonos"
+      description: "Retorna un maximo de 50 telefonos ordenados por id."
+      operationId: "getAllTelefonos"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Telefonos"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"    
+    post:
+      tags:
+      - "telefonos"
+      summary: "Post telefono"
+      description: "Inserta un telefono para un domicilio"
+      operationId: "insertTelefono"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Telefono."
+        required: true
+        schema:
+          type: "object"
+          required:
+          - "id_domicilio"
+          - "codigo_area"
+          - "numero"
+          properties:
+            id_domicilio:
+              type: "integer"
+              format: "int64"
+            codigo_area:
+              type: "string"
+              format: "20"
+            numero:
+              type: "number"
+            interno:
+              type: "number"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Telefonos"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"          
+  /telefonos/{id}:
+    get:
+      tags:
+      - "telefonos"
+      summary: "Find telefonos by id"
+      description: "Busqueda de telefonos por id"
+      operationId: "findTelefonosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de las especialidad profesional a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Telefonos"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    put:
+      tags:
+      - "telefonos"
+      summary: "Put telefonos"
+      description: "Modificar telefonos"
+      operationId: "putTelefonosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la farmacia a modificar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+             - "id"
+             - "id_domicilio"
+             - "codigo_area"
+             - "numero"
+            properties:
+              id:
+                type: "integer"
+                format: "int64"
+              id_domicilio:
+                type: "integer"
+                format: "int64"
+              codigo_area:
+                type: "string"
+                format: "20"
+              numero:
+                type: "number"
+              interno:
+                type: "number"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /horariosatencion:
+    get:
+      tags:
+      - "horarios atencion"
+      summary: "Get all horarios atencion"
+      description: "Retorna un maximo de 50 horarios atencion ordenados por id."
+      operationId: "getAllHorariosAtencion"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Horarios_Atencion"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"   
+    post:
+      tags:
+      - "horarios atencion"
+      summary: "Post horario de atencion"
+      description: "Inserta un horario de atención para un domicilio"
+      operationId: "insertHorariosAtencion"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Horario de atención."
+        required: true
+        schema:
+          type: "object"
+          required:
+          - "id_domicilio"
+          - "dia"
+          - "desde_1"
+          - "hasta_1"
+          properties:
+            id_domicilio:
+              type: "integer"
+              format: "int64"
+            dia:
+              type: "string"
+              format: "20"
+              enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+            desde_1:
+              type: "string"
+              format: "5"
+            hasta_1:
+              type: "string"
+              format: "5"
+            desde_2:
+              type: "string"
+              format: "5"
+            hasta_2:
+              type: "string"
+              format: "5"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Horarios_Atencion"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"           
+  /horariosatencion/{id}:
+    get:
+      tags:
+      - "horarios atencion"
+      summary: "Find horarios atencion by id"
+      description: "Busqueda de horariosatencion por id"
+      operationId: "findHorariosAtencionById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del horarios atencion a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Horarios_Atencion"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    put:
+      tags:
+      - "horarios atencion"
+      summary: "Put horarios atencion"
+      description: "Modificar horarios de atención"
+      operationId: "putHorariosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del horario a modificar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+             - "id"
+             - "id_domicilio"
+             - "dia"
+             - "desde_1"
+             - "hasta_1"
+            properties:
+              id:
+                type: "integer"
+                format: "int64"
+              id_domicilio:
+                type: "integer"
+                format: "int64"
+              dia:
+                type: "string"
+                format: "20"
+                enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+              desde_1:
+                type: "string"
+                format: "5"
+              hasta_1:
+                type: "string"
+                format: "5"
+              desde_2:
+                type: "string"
+                format: "5"
+              hasta_2:
+                type: "string"
+                format: "5"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /domicilios:
+    get:
+      tags:
+      - "domicilios"
+      summary: "Get all domicilios"
+      description: "Retorna un maximo de 50 domicilios ordenados por id."
+      operationId: "getAllDomicilios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                   type: "object"
+                   properties:
+                    id:
+                      type: "integer"
+                      format: "int64"
+                    id_partido:
+                      type: "integer"
+                      format: "int64"
+                    id_localidad:
+                      type: "integer"
+                      format: "int64"
+                    id_barrio:
+                      type: "integer"
+                      format: "int64"
+                    id_profesional:
+                      type: "integer"
+                      format: "int64"
+                    id_farmacia:
+                      type: "integer"
+                      format: "int64"
+                    id_clinica_alta_complejidad:
+                      type: "integer"
+                      format: "int64"
+                    id_clinica:
+                      type: "integer"
+                      format: "int64"
+                    codigo_postal:
+                      type: "integer"
+                    calle:
+                      type: "string"
+                      format: "80"
+                    altura:
+                      type: "string"
+                      format: "20"
+                    piso:
+                      type: "number"
+                    departamento:
+                      type: "string"
+                      format: "10"
+                    latitud:
+                      type: "number"
+                      format: "9.6"
+                    longitud:
+                      type: "number"
+                      format: "9.6"
+                    time_create:
+                      type: "datetime"
+                    time_modify:
+                      type: "datetime"
+                    telefonos:
+                      type: "object"
+                      $ref: "#/definitions/Telefonos"
+                    horarios_atencion:
+                      type: "object"
+                      $ref: "#/definitions/Horarios_Atencion"
+                    partido:
+                      type: "object"
+                      $ref: "#/definitions/Partidos"
+                    localidad:
+                      type: "object"
+                      $ref: "#/definitions/Localidades"
+                    barrio:
+                      type: "object"
+                      $ref: "#/definitions/Barrios"
+                    limit:
+                      type: "integer"
+                    offset:
+                      type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"     
+    post:
+      tags:
+      - "domicilios"
+      summary: "Post domicilios"
+      description: "Inserta un domicilio, telefonos y horarios de atencion"
+      operationId: "insertHorariosAtencion"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Domicilio, telefonos y horarios de atencion."
+        required: true
+        schema:
+            type: "object"
+            required:
+            - "id_partido"
+            - "id_localidad"
+            - "calle"
+            - "altura"
+            - "telefonos"
+            properties:
+                id_partido:
+                  type: "integer"
+                  format: "int64"
+                id_localidad:
+                  type: "integer"
+                  format: "int64"
+                id_barrio:
+                  type: "integer"
+                  format: "int64"
+                id_profesional:
+                  type: "integer"
+                  format: "int64"
+                id_farmacia:
+                  type: "integer"
+                  format: "int64"
+                id_clinica_alta_complejidad:
+                  type: "integer"
+                  format: "int64"
+                id_clinica:
+                  type: "integer"
+                  format: "int64"
+                codigo_postal:
+                  type: "integer"
+                calle:
+                  type: "string"
+                  format: "80"
+                altura:
+                  type: "string"
+                  format: "20"
+                piso:
+                  type: "number"
+                departamento:
+                  type: "string"
+                  format: "10"
+                latitud:
+                  type: "number"
+                  format: "9.6"
+                longitud:
+                  type: "number"
+                  format: "9.6"
+                telefonos:
+                  type: "array"  
+                  items:
+                    type: "object"
+                    required:
+                    - "codigo_area"
+                    - "numero"
+                    properties:
+                      codigo_area:
+                        type: "string"
+                        format: "20"
+                      numero:
+                        type: "number"
+                      interno:
+                        type: "number"
+                horarios_atencion:
+                  type: "array"  
+                  items:
+                    type: "object"
+                    required:
+                    - "dia"
+                    - "desde_1"
+                    - "hasta_1"
+                    properties:
+                      dia:
+                        type: "string"
+                        format: "20"
+                        enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+                      desde_1:
+                        type: "string"
+                        format: "5"
+                      hasta_1:
+                        type: "string"
+                        format: "5"
+                      desde_2:
+                        type: "string"
+                        format: "5"
+                      hasta_2:
+                        type: "string"
+                        format: "5"             
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Domicilios"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"                   
+  /domicilios/{id}:
+    get:
+      tags:
+      - "domicilios"
+      summary: "Find domicilio by id"
+      description: "Busqueda de domicilios por id"
+      operationId: "findDomiciliosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del domicilio a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Domicilios"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    put:
+      tags:
+      - "domicilios"
+      summary: "Put domicilios"
+      description: "Modificar domicilio, telefonos y horarios de atencion"
+      operationId: "updateHorariosAtencion"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Domicilio, telefonos y horarios de atencion."
+        required: true
+        schema:
+            type: "object"
+            required:
+            - "id"
+            properties:
+                id:
+                  type: "integer"
+                  format: "int64"
+                id_partido:
+                  type: "integer"
+                  format: "int64"
+                id_localidad:
+                  type: "integer"
+                  format: "int64"
+                id_barrio:
+                  type: "integer"
+                  format: "int64"
+                id_profesional:
+                  type: "integer"
+                  format: "int64"
+                id_farmacia:
+                  type: "integer"
+                  format: "int64"
+                id_clinica_alta_complejidad:
+                  type: "integer"
+                  format: "int64"
+                id_clinica:
+                  type: "integer"
+                  format: "int64"
+                codigo_postal:
+                  type: "integer"
+                calle:
+                  type: "string"
+                  format: "80"
+                altura:
+                  type: "string"
+                  format: "20"
+                piso:
+                  type: "number"
+                departamento:
+                  type: "string"
+                  format: "10"
+                latitud:
+                  type: "number"
+                  format: "9.6"
+                longitud:
+                  type: "number"
+                  format: "9.6"
+                telefonos:
+                  type: "array"  
+                  items:
+                    type: "object"
+                    required:
+                    - "id"
+                    - "id_domicilio"
+                    - "codigo_area"
+                    - "numero"
+                    properties:
+                      id:
+                        type: "integer"
+                        format: "int64"
+                      id_domicilio:
+                        type: "integer"
+                        format: "int64"
+                      codigo_area:
+                        type: "string"
+                        format: "20"
+                      numero:
+                        type: "number"
+                      interno:
+                        type: "number"
+                horarios_atencion:
+                  type: "array"  
+                  items:
+                    type: "object"
+                    required:
+                    - "id"
+                    - "id_domicilio"
+                    - "dia"
+                    - "desde_1"
+                    - "hasta_1"
+                    properties:
+                      id:
+                        type: "integer"
+                        format: "int64"
+                      id_domicilio:
+                        type: "integer"
+                        format: "int64"
+                      dia:
+                        type: "string"
+                        format: "20"
+                        enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+                      desde_1:
+                        type: "string"
+                        format: "5"
+                      hasta_1:
+                        type: "string"
+                        format: "5"
+                      desde_2:
+                        type: "string"
+                        format: "5"
+                      hasta_2:
+                        type: "string"
+                        format: "5"            
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Domicilios"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+    delete:
+      tags:
+      - "domicilios"
+      summary: "Deleted domicilio by id"
+      description: "Borrar domicilio, telefonos y horarios de atencion por id"
+      operationId: "deletedDomiciliosById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id del domicilio a eliminar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"  
+  /farmacias:
+    get:
+      tags:
+      - "farmacias"
+      summary: "Get all farmacias"
+      description: "Retorna un maximo de 50 farmacias ordenados por id."
+      operationId: "getAllFarmacias"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Farmacias"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    post:
+      tags:
+      - "farmacias"
+      summary: "Post farmacias"
+      description: "Inserta un farmacais con sus telefonos y horarios de atencion"
+      operationId: "insertHorariosAtencion"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Farmacias con sus telefonos y horarios de atencion."
+        required: true
+        schema:
+          $ref: "#/definitions/Farmacias"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Farmacias"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /farmacias/domicilios:
+    get:
+      tags:
+      - "farmacias"
+      summary: "Get all farmacias and domiciliios"
+      description: "Retorna un maximo de 50 farmacias y sus domicilios ordenados por id."
+      operationId: "getAllFarmaciasDomicilios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                        id:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad_hijo:
+                          type: "integer"
+                          format: "int64"
+                        nombre:
+                          type: "string"
+                          format: "60"
+                        razon_social:
+                          type: "string"
+                          format: "60"
+                        cuit:
+                          type: "string"
+                          format: "11"
+                        estado_prestador:
+                          type: "boolean"
+                          default: true
+                        time_create:
+                          type: "datetime"
+                          default: "nowDateTime"
+                        time_modify:
+                          type: "datetime"
+                          default: "nowDateTime"
+                        domicilios:
+                          type: "array"
+                          items:       
+                            type: "object"
+                            $ref: "#/definitions/Domicilios"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /farmacias/{id}:
+    get:
+      tags:
+      - "farmacias"
+      summary: "Find farmacia by id"
+      description: "Busqueda de farmacia por id"
+      operationId: "findFarmaciaById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la farmacia a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Farmacias"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    put:
+      tags:
+      - "farmacias"
+      summary: "Put farmacia by id"
+      description: "Modificar una farmacia, telefonos y horarios atencion"
+      operationId: "updateFarmaciaById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la farmacia a modificar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+            - "id"
+            - "id_entidad"
+            - "nombre"
+            - "cuit"
+            properties:
+              id:
+                type: "integer"
+                format: "int64"
+              id_entidad:
+                type: "integer"
+                format: "int64"
+              id_entidad_hijo:
+                type: "integer"
+                format: "int64"
+              nombre:
+                type: "string"
+                format: "60"
+              razon_social:
+                type: "string"
+                format: "60"
+              cuit:
+                type: "string"
+                format: "11"
+              estado_prestador:
+                type: "boolean"
+                default: true
+              domicilios:
+                type: "array"  
+                items:    
+                  type: "object"
+                  required:
+                  - "id"
+                  properties:
+                      id:
+                        type: "integer"
+                        format: "int64"
+                      id_partido:
+                        type: "integer"
+                        format: "int64"
+                      id_localidad:
+                        type: "integer"
+                        format: "int64"
+                      id_barrio:
+                        type: "integer"
+                        format: "int64"
+                      id_profesional:
+                        type: "integer"
+                        format: "int64"
+                      id_farmacia:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica_alta_complejidad:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica:
+                        type: "integer"
+                        format: "int64"
+                      codigo_postal:
+                        type: "integer"
+                      calle:
+                        type: "string"
+                        format: "80"
+                      altura:
+                        type: "string"
+                        format: "20"
+                      piso:
+                        type: "number"
+                      departamento:
+                        type: "string"
+                        format: "10"
+                      latitud:
+                        type: "number"
+                        format: "9.6"
+                      longitud:
+                        type: "number"
+                        format: "9.6"
+                      telefonos:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "codigo_area"
+                          - "numero"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            codigo_area:
+                              type: "string"
+                              format: "20"
+                            numero:
+                              type: "number"
+                            interno:
+                              type: "number"
+                      horarios_atencion:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "dia"
+                          - "desde_1"
+                          - "hasta_1"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            dia:
+                              type: "string"
+                              format: "20"
+                              enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+                            desde_1:
+                              type: "string"
+                              format: "5"
+                            hasta_1:
+                              type: "string"
+                              format: "5"
+                            desde_2:
+                              type: "string"
+                              format: "5"
+                            hasta_2:
+                              type: "string"
+                              format: "5"      
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    delete:
+      tags:
+      - "farmacias"
+      summary: "Deleted farmacia by id"
+      description: "Borrar farmacia, telefonos y horarios de atencion por id"
+      operationId: "deletedFarmaciaById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la farmacia a eliminar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /clinicas:
+    get:
+      tags:
+      - "clinicas"
+      summary: "Get all clinicas"
+      description: "Retorna un maximo de 50 clinicas ordenados por id."
+      operationId: "getAllClinicas"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Clinicas"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    post:
+      tags:
+      - "clinicas"
+      summary: "Post clinicas"
+      description: "Inserta un clinica, telefonos y horarios de atencion"
+      operationId: "insertClinica"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Clinica telefonos y horarios de atencion."
+        required: true
+        schema:
+          $ref: "#/definitions/Clinicas"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Farmacias"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /clinicas/domicilios:
+    get:
+      tags:
+      - "clinicas"
+      summary: "Get all clincas and domiciliios"
+      description: "Retorna un maximo de 50 clinicas y sus domicilios ordenados por id."
+      operationId: "getAllClinicasDomicilios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                        id:
+                          type: "integer"
+                          format: "int64"
+                        id_especialidad_clinica:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad_hijo:
+                          type: "integer"
+                          format: "int64"
+                        nombre:
+                          type: "string"
+                          format: "60"
+                        razon_social:
+                          type: "string"
+                          format: "60"
+                        cuit:
+                          type: "string"
+                          format: "11"
+                        estado_prestador:
+                          type: "boolean"
+                          default: true
+                        time_create:
+                          type: "datetime"
+                          default: "nowDateTime"
+                        time_modify:
+                          type: "datetime"
+                          default: "nowDateTime" 
+                        domicilios:
+                          type: "array"
+                          items:       
+                            type: "object"
+                            $ref: "#/definitions/Domicilios"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /clinicas/{id}:
+    get:
+      tags:
+      - "clinicas"
+      summary: "Find clinica by id"
+      description: "Busqueda de clinica por id"
+      operationId: "findClinicaById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la clinica a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          type: "object"
+          schema:
+            $ref: "#/definitions/Clinicas"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    put:
+      tags:
+      - "clinicas"
+      summary: "Put clinicas by id"
+      description: "Modificar una clinica, telefonos y horarios atencion"
+      operationId: "updateClinicaById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la clinica a modificar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+            - "id"
+            properties:
+              id:
+                type: "integer"
+                format: "int64"
+              id_especialidad_clinica:
+                type: "integer"
+                format: "int64"
+              id_entidad:
+                type: "integer"
+                format: "int64"
+              id_entidad_hijo:
+                type: "integer"
+                format: "int64"
+              nombre:
+                type: "string"
+                format: "60"
+              razon_social:
+                type: "string"
+                format: "60"
+              cuit:
+                type: "string"
+                format: "11"
+              estado_prestador:
+                type: "boolean"
+                default: true
+              domicilios:
+                type: "array"  
+                items:    
+                  type: "object"
+                  required:
+                  - "id"
+                  properties:
+                      id:
+                        type: "integer"
+                        format: "int64"
+                      id_partido:
+                        type: "integer"
+                        format: "int64"
+                      id_localidad:
+                        type: "integer"
+                        format: "int64"
+                      id_barrio:
+                        type: "integer"
+                        format: "int64"
+                      id_profesional:
+                        type: "integer"
+                        format: "int64"
+                      id_farmacia:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica_alta_complejidad:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica:
+                        type: "integer"
+                        format: "int64"
+                      codigo_postal:
+                        type: "integer"
+                      calle:
+                        type: "string"
+                        format: "80"
+                      altura:
+                        type: "string"
+                        format: "20"
+                      piso:
+                        type: "number"
+                      departamento:
+                        type: "string"
+                        format: "10"
+                      latitud:
+                        type: "number"
+                        format: "9.6"
+                      longitud:
+                        type: "number"
+                        format: "9.6"
+                      telefonos:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "codigo_area"
+                          - "numero"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            codigo_area:
+                              type: "string"
+                              format: "20"
+                            numero:
+                              type: "number"
+                            interno:
+                              type: "number"
+                      horarios_atencion:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "dia"
+                          - "desde_1"
+                          - "hasta_1"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            dia:
+                              type: "string"
+                              format: "20"
+                              enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+                            desde_1:
+                              type: "string"
+                              format: "5"
+                            hasta_1:
+                              type: "string"
+                              format: "5"
+                            desde_2:
+                              type: "string"
+                              format: "5"
+                            hasta_2:
+                              type: "string"
+                              format: "5"      
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    delete:
+      tags:
+      - "clinicas"
+      summary: "Deleted clinica by id"
+      description: "Borrar clinica, telefonos y horarios de atencion por id"
+      operationId: "deletedClinicaById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la clinica a eliminar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /clinicasaltacomplejidad:
+    get:
+      tags:
+      - "clinicas alta complejidad"
+      summary: "Get all clinicas alta complejidad"
+      description: "Retorna un maximo de 50 clinicas alta complejidad ordenados por id."
+      operationId: "getAllClinicasAltaComplejidad"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/ClinicasAltaComplejidad"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    post:
+      tags:
+      - "clinicas alta complejidad"
+      summary: "Post clinicas alta complejidad"
+      description: "Inserta una clinica de alta complejidad, telefonos y horarios de atencion"
+      operationId: "insertClinica"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Clinica alta complejidad telefonos y horarios de atencion."
+        required: true
+        schema:
+          type: "object"
+          required:
+          - "id_entidad"
+          - "id_especialidad_clinica"
+          - "nombre"
+          - "razon_social"
+          - "cuit"
+          properties:
+            id_especialidad_clinica_alta_complejidad:
+              type: "integer"
+              format: "int64"
+            id_entidad:
+              type: "integer"
+              format: "int64"
+            id_entidad_hijo:
+              type: "integer"
+              format: "int64"
+            nombre:
+              type: "string"
+              format: "60"
+            razon_social:
+              type: "string"
+              format: "60"
+            cuit:
+              type: "string"
+              format: "11"
+            estado_prestador:
+              type: "boolean"
+              default: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ClinicasAltaComplejidad"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /clinicasaltacomplejidad/domicilios:
+    get:
+      tags:
+      - "clinicas alta complejidad"
+      summary: "Get all clinicas alta complejidad and domiciliios"
+      description: "Retorna un maximo de 50 clinicas alta complejidad y sus domicilios ordenados por id."
+      operationId: "getAllClinicasAltaComplejidadDomicilios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                        id:
+                          type: "integer"
+                          format: "int64"
+                        id_especialidad_clinica_alta_complejidad:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad_hijo:
+                          type: "integer"
+                          format: "int64"
+                        nombre:
+                          type: "string"
+                          format: "60"
+                        razon_social:
+                          type: "string"
+                          format: "60"
+                        cuit:
+                          type: "string"
+                          format: "11"
+                        estado_prestador:
+                          type: "boolean"
+                          default: true
+                        time_create:
+                          type: "datetime"
+                          default: "nowDateTime"
+                        time_modify:
+                          type: "datetime"
+                          default: "nowDateTime" 
+                        domicilios:
+                          type: "array"
+                          items:       
+                            type: "object"
+                            $ref: "#/definitions/Domicilios"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /clinicasaltacomplejidad/{id}:
+    get:
+      tags:
+      - "clinicas alta complejidad"
+      summary: "Find clinicas alta complejidad by id"
+      description: "Busqueda de clinicas alta complejidad por id"
+      operationId: "findClinicaAltaComplejidadById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la clinica alta complejidad a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/ClinicasAltaComplejidad"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    put:
+      tags:
+      - "clinicas alta complejidad"
+      summary: "Put clinica alta complejidad by id"
+      description: "Modificar una clinica alta complejidad, telefonos y horarios atencion"
+      operationId: "updateClinicaAltaComplejidadById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la clinica alta complejidad a modificar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+            - "id"
+            properties:
+              id:
+                type: "integer"
+                format: "int64"
+              id_especialidad_clinica_alta_complejidad:
+                type: "integer"
+                format: "int64"
+              id_entidad:
+                type: "integer"
+                format: "int64"
+              id_entidad_hijo:
+                type: "integer"
+                format: "int64"
+              nombre:
+                type: "string"
+                format: "60"
+              razon_social:
+                type: "string"
+                format: "60"
+              cuit:
+                type: "string"
+                format: "11"
+              estado_prestador:
+                type: "boolean"
+                default: true
+              domicilios:
+                type: "array"  
+                items:    
+                  type: "object"
+                  required:
+                  - "id"
+                  properties:
+                      id:
+                        type: "integer"
+                        format: "int64"
+                      id_partido:
+                        type: "integer"
+                        format: "int64"
+                      id_localidad:
+                        type: "integer"
+                        format: "int64"
+                      id_barrio:
+                        type: "integer"
+                        format: "int64"
+                      id_profesional:
+                        type: "integer"
+                        format: "int64"
+                      id_farmacia:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica_alta_complejidad:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica:
+                        type: "integer"
+                        format: "int64"
+                      codigo_postal:
+                        type: "integer"
+                      calle:
+                        type: "string"
+                        format: "80"
+                      altura:
+                        type: "string"
+                        format: "20"
+                      piso:
+                        type: "number"
+                      departamento:
+                        type: "string"
+                        format: "10"
+                      latitud:
+                        type: "number"
+                        format: "9.6"
+                      longitud:
+                        type: "number"
+                        format: "9.6"
+                      telefonos:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "codigo_area"
+                          - "numero"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            codigo_area:
+                              type: "string"
+                              format: "20"
+                            numero:
+                              type: "number"
+                            interno:
+                              type: "number"
+                      horarios_atencion:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "dia"
+                          - "desde_1"
+                          - "hasta_1"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            dia:
+                              type: "string"
+                              format: "20"
+                              enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+                            desde_1:
+                              type: "string"
+                              format: "5"
+                            hasta_1:
+                              type: "string"
+                              format: "5"
+                            desde_2:
+                              type: "string"
+                              format: "5"
+                            hasta_2:
+                              type: "string"
+                              format: "5"      
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    delete:
+      tags:
+      - "clinicas alta complejidad"
+      summary: "Deleted clinica alta complejidad by id"
+      description: "Borrar clinica alta complejidad, telefonos y horarios de atencion por id"
+      operationId: "deletedClinicaAltaComplejidadById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la clinica de alta complejidad a eliminar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+  /profesionales:
+    get:
+      tags:
+      - "profesionales"
+      summary: "Get all profesionales"
+      description: "Retorna un maximo de 50 profesionales ordenados por id."
+      operationId: "getAllProfesionales"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Profesionales"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    post:
+      tags:
+      - "profesionales"
+      summary: "Post profesional"
+      description: "Inserta un profesional, telefonos y horarios de atencion"
+      operationId: "insertProfesional"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Clinica profesional y horarios de atencion."
+        required: true
+        schema:
+          type: "object"
+          required:
+          - "id_entidad"
+          - "id_estado"
+          - "id_profesion"
+          - "id_especialidad"
+          - "nombre"
+          - "apellido"
+          - "cuit"
+          - "matricula_provincial"
+          properties:
+            id_estado:
+              type: "integer"
+              format: "int64"
+              default: 1
+            id_categoria:
+              type: "integer"
+              format: "int64"
+            id_profesion:
+              type: "integer"
+              format: "int64"
+            id_especialidad:
+              type: "integer"
+              format: "int64"   
+            id_entidad:
+              type: "integer"
+              format: "int64"
+            id_entidad_hijo:
+              type: "integer"
+              format: "int64"
+            nombre:
+              type: "string"
+              format: "100"
+            apellido:
+              type: "string"
+              format: "100"
+            cuit:
+              type: "string"
+              format: "11"
+            matricula_provincial:
+              type: "integer"
+              format: "int64"
+            matricula_nacional:
+              type: "integer"
+              format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Profesionales"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores" 
+  /profesionales/domicilios:
+    get:
+      tags:
+      - "profesionales"
+      summary: "Get all profesionales and domiciliios"
+      description: "Retorna un maximo de 50 profesionales y sus domicilios ordenados por id."
+      operationId: "getAllProfesionalesDomicilios"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filter"
+        in: "query"
+        description: "Parametros a ser considerados para el filtro. Operadores validos (gt, gte, lt, lte, eq, ne, not, in, notIn, like, notLike, iLike, notILike.). Ej: id eq 12"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Limite de registro devueltos (maximo permitido 100)."
+        required: false
+        type: "string"
+      - name: "offset"
+        in: "query"
+        description: "Omite tantas filas antes de comenzar a devolver filas en la respuesta."
+        required: false
+        type: "string"
+      - name: "sort"
+        in: "query"
+        description: "Orden ascendente o descendente. Ej: id asc"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+                count:
+                  type: "integer"
+                row:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                        id:
+                          type: "integer"
+                          format: "int64"
+                        id_especialidad_clinica:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad:
+                          type: "integer"
+                          format: "int64"
+                        id_entidad_hijo:
+                          type: "integer"
+                          format: "int64"
+                        nombre:
+                          type: "string"
+                          format: "60"
+                        razon_social:
+                          type: "string"
+                          format: "60"
+                        cuit:
+                          type: "string"
+                          format: "11"
+                        estado_prestador:
+                          type: "boolean"
+                          default: true
+                        time_create:
+                          type: "datetime"
+                          default: "nowDateTime"
+                        time_modify:
+                          type: "datetime"
+                          default: "nowDateTime" 
+                        domicilios:
+                          type: "array"
+                          items:       
+                            type: "object"
+                            $ref: "#/definitions/Domicilios"
+                limit:
+                  type: "integer"
+                offset:
+                  type: "integer"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"              
+  /profesionales/{id}:
+    get:
+      tags:
+      - "profesionales"
+      summary: "Find profesional by id"
+      description: "Busqueda de profesional por id"
+      operationId: "findProfesionalById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la profesional a buscar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            $ref: "#/definitions/Profesionales"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    put:
+      tags:
+      - "profesionales"
+      summary: "Put porfesional by id"
+      description: "Modificar un profesional, telefonos y horarios atencion"
+      operationId: "updateProfesionalaById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la clinica a modificar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+            - "id"
+            properties:
+              id:
+                type: "integer"
+                format: "int64"
+              id_estado:
+                type: "integer"
+                format: "int64"
+              id_categoria:
+                type: "integer"
+                format: "int64"
+              id_profesion:
+                type: "integer"
+                format: "int64"
+              id_especialidad:
+                type: "integer"
+                format: "int64"   
+              id_entidad:
+                type: "integer"
+                format: "int64"
+              id_entidad_hijo:
+                type: "integer"
+                format: "int64"
+              nombre:
+                type: "string"
+                format: "100"
+              apellido:
+                type: "string"
+                format: "100"
+              cuit:
+                type: "string"
+                format: "11"
+              matricula_provincial:
+                type: "integer"
+                format: "int64"
+              matricula_nacional:
+                type: "integer"
+                format: "int64"
+              domicilios:
+                type: "array"  
+                items:    
+                  type: "object"
+                  required:
+                  - "id"
+                  properties:
+                      id:
+                        type: "integer"
+                        format: "int64"
+                      id_partido:
+                        type: "integer"
+                        format: "int64"
+                      id_localidad:
+                        type: "integer"
+                        format: "int64"
+                      id_barrio:
+                        type: "integer"
+                        format: "int64"
+                      id_profesional:
+                        type: "integer"
+                        format: "int64"
+                      id_farmacia:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica_alta_complejidad:
+                        type: "integer"
+                        format: "int64"
+                      id_clinica:
+                        type: "integer"
+                        format: "int64"
+                      codigo_postal:
+                        type: "integer"
+                      calle:
+                        type: "string"
+                        format: "80"
+                      altura:
+                        type: "string"
+                        format: "20"
+                      piso:
+                        type: "number"
+                      departamento:
+                        type: "string"
+                        format: "10"
+                      latitud:
+                        type: "number"
+                        format: "9.6"
+                      longitud:
+                        type: "number"
+                        format: "9.6"
+                      telefonos:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "codigo_area"
+                          - "numero"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            codigo_area:
+                              type: "string"
+                              format: "20"
+                            numero:
+                              type: "number"
+                            interno:
+                              type: "number"
+                      horarios_atencion:
+                        type: "array"  
+                        items:
+                          type: "object"
+                          required:
+                          - "id"
+                          - "id_domicilio"
+                          - "dia"
+                          - "desde_1"
+                          - "hasta_1"
+                          properties:
+                            id:
+                              type: "integer"
+                              format: "int64"
+                            id_domicilio:
+                              type: "integer"
+                              format: "int64"
+                            dia:
+                              type: "string"
+                              format: "20"
+                              enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+                            desde_1:
+                              type: "string"
+                              format: "5"
+                            hasta_1:
+                              type: "string"
+                              format: "5"
+                            desde_2:
+                              type: "string"
+                              format: "5"
+                            hasta_2:
+                              type: "string"
+                              format: "5"      
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+    delete:
+      tags:
+      - "profesionales"
+      summary: "Deleted profesional by id"
+      description: "Borrar profesional, telefonos y horarios de atencion por id"
+      operationId: "deletedProfesionalById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id de la profesional a eliminar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Errores"      
+definitions:
+  Users:
+    type: "object"
+    properties:
+      user:
+        type: "string"
+        format: "60"
+      api_key:
+        type: "string"
+  Api_Key:
+    type: "object"
+    properties:
+      api_key:
+        type: "string"
+  Errores:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+      stack:
+        type: "string"
+  Barrios:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_localidad:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "60"
+      codigo_postal:
+        type: "integer"
+        format: "int64"
+  Localidades:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_partidos:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "60"
+      codigo_postal:
+        type: "integer"
+        format: "int64"
+  Partidos:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "60"
+  Categorias:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "60"
+  Estados:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "60"
+  Entidades:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      nombre:
+        type: "string"
+        format: "150"
+      estado:
+        type: "boolean"
+      codigo:
+        type: "integer"
+      date:
+        type: "datetime"
+      categoria:
+        type: "string"
+        format: "150"
+  Especialidades_Clinicas:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "150"
+      condigo:
+        type: "string"
+        format: "50"
+  Especialidades_Clinicas_Alta_Complejidad:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "150"
+      condigo:
+        type: "string"
+        format: "50"
+  Especialidades_Profesionales:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_profesion:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "150"
+  Profesiones:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      descripcion:
+        type: "string"
+        format: "150"
+  Domicilios:
+    type: "object"
+    required:
+     - "id_partido"
+     - "id_localidad"
+     - "calle"
+     - "altura"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_partido:
+        type: "integer"
+        format: "int64"
+      id_localidad:
+        type: "integer"
+        format: "int64"
+      id_barrio:
+        type: "integer"
+        format: "int64"
+      id_profesional:
+        type: "integer"
+        format: "int64"
+      id_farmacia:
+        type: "integer"
+        format: "int64"
+      id_clinica_alta_complejidad:
+        type: "integer"
+        format: "int64"
+      id_clinica:
+        type: "integer"
+        format: "int64"
+      codigo_postal:
+        type: "integer"
+      calle:
+        type: "string"
+        format: "80"
+      altura:
+        type: "string"
+        format: "20"
+      piso:
+        type: "number"
+      departamento:
+        type: "string"
+        format: "10"
+      latitud:
+        type: "number"
+        format: "9.6"
+      longitud:
+        type: "number"
+        format: "9.6"
+      time_create:
+        type: "datetime"
+        default: "nowDateTime"
+      time_modify:
+        type: "datetime"
+        default: "nowDateTime"
+  Telefonos:
+    type: "object"
+    required:
+     - "id_domicilio"
+     - "codigo_area"
+     - "numero"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_domicilio:
+        type: "integer"
+        format: "int64"
+      codigo_area:
+        type: "string"
+        format: "20"
+      numero:
+        type: "number"
+      interno:
+        type: "number"
+      time_create:
+        type: "datetime"
+        default: "nowDateTime"
+      time_modify:
+        type: "datetime"
+        default: "nowDateTime"
+  Horarios_Atencion:
+    type: "object"
+    required:
+     - "id_domicilio"
+     - "dia"
+     - "desde_1"
+     - "hasta_1"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_domicilio:
+        type: "integer"
+        format: "int64"
+      dia:
+        type: "string"
+        format: "20"
+        enum: ['Lunes', Martes, Miercoles, Jueves, Viernes, Sabado, Domingo]
+      desde_1:
+        type: "string"
+        format: "5"
+      hasta_1:
+        type: "string"
+        format: "5"
+      desde_2:
+        type: "string"
+        format: "5"
+      hasta_2:
+        type: "string"
+        format: "5"
+      time_create:
+        type: "datetime"
+        default: "nowDateTime"
+      time_modify:
+        type: "datetime"
+        default: "nowDateTime"
+  Farmacias:
+    type: "object"
+    required:
+     - "id_entidad"
+     - "nombre"
+     - "cuit"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_entidad:
+        type: "integer"
+        format: "int64"
+      id_entidad_hijo:
+        type: "integer"
+        format: "int64"
+      nombre:
+        type: "string"
+        format: "60"
+      razon_social:
+        type: "string"
+        format: "60"
+      cuit:
+        type: "string"
+        format: "11"
+      estado_prestador:
+        type: "boolean"
+        default: true
+      time_create:
+        type: "datetime"
+        default: "nowDateTime"
+      time_modify:
+        type: "datetime"
+        default: "nowDateTime"
+  Clinicas:
+    type: "object"
+    required:
+     - "id_entidad"
+     - "id_especialidad_clinica"
+     - "nombre"
+     - "razon_social"
+     - "cuit"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_especialidad_clinica:
+        type: "integer"
+        format: "int64"
+      id_entidad:
+        type: "integer"
+        format: "int64"
+      id_entidad_hijo:
+        type: "integer"
+        format: "int64"
+      nombre:
+        type: "string"
+        format: "60"
+      razon_social:
+        type: "string"
+        format: "60"
+      cuit:
+        type: "string"
+        format: "11"
+      estado_prestador:
+        type: "boolean"
+        default: true
+      time_create:
+        type: "datetime"
+        default: "nowDateTime"
+      time_modify:
+        type: "datetime"
+        default: "nowDateTime"      
+  ClinicasAltaComplejidad:
+    type: "object"
+    required:
+     - "id_entidad"
+     - "id_especialidad_clinica"
+     - "nombre"
+     - "razon_social"
+     - "cuit"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_especialidad_clinica_alta_complejidad:
+        type: "integer"
+        format: "int64"
+      id_entidad:
+        type: "integer"
+        format: "int64"
+      id_entidad_hijo:
+        type: "integer"
+        format: "int64"
+      nombre:
+        type: "string"
+        format: "60"
+      razon_social:
+        type: "string"
+        format: "60"
+      cuit:
+        type: "string"
+        format: "11"
+      estado_prestador:
+        type: "boolean"
+        default: true
+      time_create:
+        type: "datetime"
+        default: "nowDateTime"
+      time_modify:
+        type: "datetime"
+        default: "nowDateTime"
+  Profesionales:
+    type: "object"
+    required:
+     - "id_entidad"
+     - "id_estado"
+     - "id_profesion"
+     - "id_especialidad"
+     - "nombre"
+     - "apellido"
+     - "cuit"
+     - "matricula_provincial"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      id_estado:
+        type: "integer"
+        format: "int64"
+      id_categoria:
+        type: "integer"
+        format: "int64"
+      id_profesion:
+        type: "integer"
+        format: "int64"
+      id_especialidad:
+        type: "integer"
+        format: "int64"   
+      id_entidad:
+        type: "integer"
+        format: "int64"
+      id_entidad_hijo:
+        type: "integer"
+        format: "int64"
+      nombre:
+        type: "string"
+        format: "100"
+      apellido:
+        type: "string"
+        format: "100"
+      cuit:
+        type: "string"
+        format: "11"
+      matricula_provincial:
+        type: "integer"
+        format: "int64"
+      matricula_nacional:
+        type: "integer"
+        format: "int64"
+      time_create:
+        type: "datetime"
+        default: "nowDateTime"
+      time_modify:
+        type: "datetime"
+        default: "nowDateTime"
+  
