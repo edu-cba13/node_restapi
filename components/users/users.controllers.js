@@ -90,6 +90,8 @@ const login = async(req, res, next) => {
         let token = jwt.sign({ user: userReturn }, SEED, { expiresIn: '1h' }); // 4 horas
         res.json({
             user: user.rows[0].USU_LOGON,
+            entidad: entidadToken,
+            perfil: perfilToken,
             api_key: token
         });
     } catch (err) {
@@ -103,6 +105,8 @@ const refresh = async(req, res, next) => {
         var token = jwt.sign({ user: decoded.user }, SEED, { expiresIn: '1h' }); // 4 horas
         res.json({
             user: decoded.user.user,
+            entidad: decoded.user.entidadToken,
+            perfil: decoded.user.perfilToken,
             api_key: token
         });
     } catch (err) {
