@@ -3920,6 +3920,12 @@ definitions:
       user:
         type: "string"
         format: "60"
+      entidad:
+        type: "string"
+        format: "60"
+      perfil:
+        type: "string"
+        format: "60"
       api_key:
         type: "string"
   Api_Key:
