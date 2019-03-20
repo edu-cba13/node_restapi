@@ -105,8 +105,8 @@ const refresh = async(req, res, next) => {
         var token = jwt.sign({ user: decoded.user }, SEED, { expiresIn: '1h' }); // 4 horas
         res.json({
             user: decoded.user.user,
-            entidad: decoded.user.entidadToken,
-            perfil: decoded.user.perfilToken,
+            entidad: decoded.user.entidad,
+            perfil: decoded.user.perfil,
             api_key: token
         });
     } catch (err) {
