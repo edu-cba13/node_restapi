@@ -119,4 +119,4 @@ const config = {
     }
 };
 
-export default config;
+module.exports.default = config;
