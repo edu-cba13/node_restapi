@@ -1,7 +1,9 @@
 # Express & mssql REST API Boilerplate in ES6  [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
 
 
-# [![Express ES6 REST API Starter](https://cloud.githubusercontent.com/assets/4172932/12660610/90f5b856-c63a-11e5-878e-c9f0bbf33090.jpg)](https://172.16.3.23/PROG69AB/api-cartilla-prestadores)
+# [![Express ES6 REST API Starter](https://cloud.githubusercontent.com/assets/4172932/12660610/90f5b856-c63a-11e5-878e-c9f0bbf33090.jpg)](#)
+
+# [Endpoint that returns documentation](http://170.155.9.142/api-cartilla/v1/documentation)
 
 ## Overview
 
