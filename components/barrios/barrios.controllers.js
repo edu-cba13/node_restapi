@@ -10,7 +10,7 @@ const load = async(req, res, next, id) => {
             attributes: [
                 'id',
                 'id_localidad',
-                'codigo_postal',]   
+                'codigo_postal',],   
              where: { id: id }
         });
         return next();
